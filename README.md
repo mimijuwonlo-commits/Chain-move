@@ -44,11 +44,26 @@ The current codebase already supports a meaningful offchain and wallet-enabled p
 
 This README reflects the target Stellar direction of the project.
 
-The full Stellar integration is not yet wired end-to-end in this repository. The app still contains temporary EVM-oriented wallet plumbing through `Privy`, `viem`, and Lisk Sepolia configuration, and `package.json` still includes non-Stellar chain dependencies. Those pieces should be treated as transitional until the Stellar wallet, asset, and smart contract layer lands.
+### Wallet Abstraction Layer
+
+The codebase now includes a wallet abstraction layer that separates authentication, application identity, and blockchain account management. This abstraction:
+
+- Provides a clean API for wallet and account operations
+- Supports multiple blockchain accounts per user (Stellar, EVM, embedded wallets)
+- Allows seamless network switching between Stellar Testnet, Mainnet, and transitional chains
+- Isolates EVM/Lisk-specific code for easier future removal
+- Prepares the foundation for full Stellar wallet and transaction support
+
+See `docs/WALLET_ABSTRACTION.md` for architecture details and `docs/MIGRATION_GUIDE.md` for usage examples.
+
+### Current State
+
+The full Stellar integration is not yet wired end-to-end in this repository. The app still contains temporary EVM-oriented wallet plumbing through `Privy`, `viem`, and Lisk Sepolia configuration, and `package.json` still includes non-Stellar chain dependencies. Those pieces are now isolated through the wallet abstraction and will be removed when the Stellar wallet, asset, and smart contract layer lands.
 
 In practical terms:
 
 - the product and backend foundations are here
+- wallet abstraction layer provides structure for Stellar integration
 - Stellar asset issuance, account flows, payout tracking, and Soroban contracts are the next chain layer
 - README language, roadmap, and contribution guidance below are written for the Stellar path
 
@@ -60,6 +75,7 @@ In practical terms:
 - Tailwind CSS + Radix UI
 - MongoDB + Mongoose
 - Privy for current auth and embedded wallet onboarding
+- Wallet abstraction layer for multi-chain account management
 - Paystack for fiat payment flows
 - Resend for email delivery
 - Stellar SDK, Horizon, Stellar RPC, and Soroban planned for chain integration
