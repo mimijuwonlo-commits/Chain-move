@@ -21,6 +21,10 @@ import { getPrivyFundingErrorMessage, startPrivyFunding } from "@/lib/auth/privy
 import { cn } from "@/lib/utils"
 import { InvestorWalletDedicatedAccountCard } from "@/components/dashboard/investor-wallet-dedicated-account-card"
 import { useToast } from "@/hooks/use-toast"
+import { isMockStellar } from "@/lib/mock-stellar/mockConfig"
+import { mockAccount } from "@/lib/mock-stellar/mockAccount"
+import { mockAssets } from "@/lib/mock-stellar/mockAssets"
+import { mockActivity } from "@/lib/mock-stellar/mockActivity"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -128,10 +132,22 @@ export function InvestorWalletPanel({ sectionId = "wallet", className, showTitle
     [wallets],
   )
 
-  const walletAddress = walletSummary?.wallet.walletAddress || embeddedWallet?.address || authUser?.walletAddress || ""
+  const walletAddress = isMockStellar ? mockAccount.publicKey : (walletSummary?.wallet.walletAddress || embeddedWallet?.address || authUser?.walletAddress || "")
   const internalBalance = walletSummary?.wallet.internalBalanceNgn || 0
 
   const fundingTransactions = useMemo(() => {
+    if (isMockStellar) {
+      return mockActivity.map(activity => ({
+        id: activity.id,
+        type: activity.type,
+        amount: Number.parseFloat(activity.amount),
+        currency: "USD",
+        status: activity.status,
+        method: "Stellar Demo",
+        description: activity.type,
+        timestamp: activity.timestamp,
+      }))
+    }
     if (!walletSummary?.transactions) return []
     return walletSummary.transactions
       .filter((tx) => tx.type === "wallet_funding" || tx.type === "deposit")
@@ -141,6 +157,15 @@ export function InvestorWalletPanel({ sectionId = "wallet", className, showTitle
   const loadWalletSummary = useCallback(async () => {
     setIsSummaryLoading(true)
     setSummaryError(null)
+
+    if (isMockStellar) {
+      setWalletSummary({
+        wallet: { internalBalanceNgn: 150000, walletAddress: mockAccount.publicKey },
+        transactions: []
+      })
+      setIsSummaryLoading(false)
+      return
+    }
 
     try {
       const response = await fetch("/api/wallet/summary")
@@ -221,6 +246,14 @@ export function InvestorWalletPanel({ sectionId = "wallet", className, showTitle
   }
 
   const handlePrivyFunding = async () => {
+    if (isMockStellar) {
+      toast({
+        title: "Mock Demo",
+        description: "Funding disabled in demo mode.",
+      })
+      return
+    }
+
     if (!walletAddress) {
       toast({
         title: "Wallet unavailable",
@@ -367,6 +400,12 @@ export function InvestorWalletPanel({ sectionId = "wallet", className, showTitle
   }, [searchParams, verifyPaymentReference])
 
   useEffect(() => {
+    if (isMockStellar) {
+      setOnchainBalance(mockAccount.balance)
+      setOnchainLoading(false)
+      return
+    }
+
     if (!walletAddress) {
       setOnchainBalance(null)
       return
@@ -487,8 +526,21 @@ export function InvestorWalletPanel({ sectionId = "wallet", className, showTitle
 
           <div className="rounded-xl border bg-muted/20 p-4">
             <p className="text-xs uppercase tracking-wide text-muted-foreground">Onchain balance</p>
-            <p className="mt-2 text-xl font-semibold">{onchainLoading ? "Loading..." : onchainBalance || "Unavailable"}</p>
-            <p className="mt-1 text-xs text-muted-foreground">Lisk Sepolia embedded wallet</p>
+            {isMockStellar ? (
+              <div className="mt-2 space-y-1">
+                {mockAssets.map(asset => (
+                  <div key={asset.code} className="flex justify-between items-center text-sm">
+                    <span className="font-medium">{asset.code}</span>
+                    <span>{asset.balance}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="mt-2 text-xl font-semibold">{onchainLoading ? "Loading..." : onchainBalance || "Unavailable"}</p>
+            )}
+            <p className="mt-1 text-xs text-muted-foreground">
+              {isMockStellar ? "Stellar Mock Assets" : "Lisk Sepolia embedded wallet"}
+            </p>
           </div>
         </div>
 
