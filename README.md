@@ -144,7 +144,8 @@ npm run dev
 - `NEXT_PUBLIC_PRIVY_APP_ID`, `PRIVY_APP_SECRET`, and `PRIVY_JWKS_URL` are required for the current Privy-backed auth flow.
 - `PAYSTACK_SECRET_KEY` is required for wallet funding flows.
 - `PAYSTACK_DVA_PREFERRED_BANK` optionally overrides the bank slug used when provisioning Paystack dedicated virtual accounts. For test keys, the app defaults to `test-bank`.
-- `RESEND_API_KEY` is only needed for email features.
+- Set `ENABLE_MOCK_EMAILS=true` to exercise email flows locally without a Resend key or real delivery. Mock sends log only the recipient count and subject, then return a `mock_email_*` delivery ID.
+- With `ENABLE_MOCK_EMAILS=false`, email delivery continues through Resend and requires `RESEND_API_KEY`. Keep the API key server-side and never commit it.
 - Stellar variables are not required by the current code yet. The expected integration pass should introduce explicit values such as `STELLAR_NETWORK`, `STELLAR_HORIZON_URL`, `STELLAR_RPC_URL`, issuer account public keys, distribution account public keys, and contract IDs.
 
 ## Driver Dedicated Repayment Accounts
