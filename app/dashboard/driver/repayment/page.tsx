@@ -14,6 +14,7 @@ import dbConnect from "@/lib/dbConnect"
 import { getSessionFromCookies } from "@/lib/auth/session"
 import { getDriverContract, getDriverPayments } from "@/lib/services/driver-contracts.service"
 import { getOrProvisionDriverVirtualAccount } from "@/lib/services/paystack-dva.service"
+import { isMockPaymentsRuntimeAllowed } from "@/lib/services/paystack-mock.service"
 import User from "@/models/User"
 
 export const dynamic = "force-dynamic"
@@ -88,9 +89,12 @@ export default async function DriverRepaymentPage() {
         bankName: string
         providerSlug?: string | null
         status: "PENDING" | "ACTIVE" | "FAILED" | "INACTIVE"
+        isMock?: boolean
+        mockReference?: string | null
       }
     | null = null
   let virtualAccountError: string | null = null
+  const showMockSimulator = isMockPaymentsRuntimeAllowed()
 
   try {
     const provisionedAccount = await getOrProvisionDriverVirtualAccount({
@@ -105,6 +109,8 @@ export default async function DriverRepaymentPage() {
         bankName: provisionedAccount.bankName,
         providerSlug: provisionedAccount.providerSlug,
         status: provisionedAccount.status,
+        isMock: provisionedAccount.isMock,
+        mockReference: provisionedAccount.mockReference,
       }
     }
   } catch (error) {
@@ -151,6 +157,7 @@ export default async function DriverRepaymentPage() {
             errorMessage={virtualAccountError}
             remainingBalanceNgn={contract.remainingBalanceNgn}
             nextPaymentAmountNgn={contract.nextPaymentAmountNgn || contract.weeklyPaymentNgn}
+            showMockSimulator={showMockSimulator}
           />
         </section>
 
