@@ -262,6 +262,10 @@ export async function GET(request: Request) {
 
     // ── users ─────────────────────────────────────────────────────────────────
     if (type === "users") {
+      const roleFilter = searchParams.get("role") || ""
+      const uQuery: Record<string, unknown> = { ...dateMatch("createdAt", startDate, endDate) }
+      if (["driver", "investor", "admin"].includes(roleFilter)) uQuery.role = roleFilter
+      const platformUsers = await User.find(uQuery).select("name fullName email role kycVerified createdAt").sort({ createdAt: -1 }).lean()
       return NextResponse.json({ message: "Users export coming soon." }, { status: 501 })
     }
 
