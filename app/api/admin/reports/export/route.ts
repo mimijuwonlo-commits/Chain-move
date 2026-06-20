@@ -228,6 +228,12 @@ export async function GET(request: Request) {
       return shouldRefreshSession ? withSessionRefresh(response, user) : response
     }
 
+    // ── kyc ──────────────────────────────────────────────────────────────
+    if (type === "kyc") {
+      return NextResponse.json({ message: "KYC export coming soon." }, { status: 501 })
+    }
+
+
     const repayments = await DriverPayment.find({
       status: "CONFIRMED",
       ...dateMatch("createdAt", startDate, endDate),
