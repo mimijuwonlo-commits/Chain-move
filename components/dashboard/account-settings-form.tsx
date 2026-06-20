@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { StellarLinkForm } from "@/components/dashboard/stellar-link-form"
 import { formatNaira } from "@/lib/currency"
 import { getWalletDisplay } from "@/lib/wallet/config"
 
