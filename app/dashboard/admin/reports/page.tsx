@@ -87,6 +87,9 @@ export default async function AdminReportsPage({ searchParams }: ReportsPageProp
   const to = getParam(resolved.to)
   const rawTab = getParam(resolved.tab, "overview")
   const tab: ReportTab = ["overview", "kyc", "fleet", "users"].includes(rawTab) ? (rawTab as ReportTab) : "overview"
+  const kycStatusFilter = getParam(resolved.status)
+  const vehicleStatusFilter = getParam(resolved.vstatus)
+  const roleFilter = getParam(resolved.role)
 
   const { startDate, endDate } = buildWindow(range, from, to)
   const txDateMatch = buildDateMatch("timestamp", startDate, endDate)
