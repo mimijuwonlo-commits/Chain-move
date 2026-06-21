@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { useLogout } from "@privy-io/react-auth"
 import {
   Calendar,
+  Bell,
   Car,
   ChevronDown,
   Coins,
@@ -90,6 +91,7 @@ const SIDEBAR_SECTIONS: Record<DashboardRole, SidebarSectionConfig[]> = {
       label: "Account",
       defaultExpanded: true,
       items: [
+        { label: "Activity", href: "/dashboard/investor/activity", icon: Bell },
         { label: "Settings", href: "/dashboard/investor/settings", icon: Settings },
         { label: "KYC", href: "/dashboard/investor/kyc", icon: UserCheck },
       ],
@@ -117,6 +119,7 @@ const SIDEBAR_SECTIONS: Record<DashboardRole, SidebarSectionConfig[]> = {
       label: "Account",
       defaultExpanded: true,
       items: [
+        { label: "Activity", href: "/dashboard/driver/activity", icon: Bell },
         { label: "Settings", href: "/dashboard/driver/settings", icon: Settings },
         { label: "KYC", href: "/dashboard/driver/kyc", icon: UserCheck },
       ],
@@ -145,6 +148,7 @@ const SIDEBAR_SECTIONS: Record<DashboardRole, SidebarSectionConfig[]> = {
       label: "Governance",
       defaultExpanded: true,
       items: [
+        { label: "Activity", href: "/dashboard/admin/activity", icon: Bell },
         { label: "Reports", href: "/dashboard/admin/reports", icon: FileText },
         { label: "Issues", href: "/dashboard/admin/issues", icon: ShieldAlert },
         { label: "Governance", href: "/dashboard/admin/governance", icon: Vote },
