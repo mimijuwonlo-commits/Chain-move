@@ -20,7 +20,15 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Then update `.env.local` with local placeholders or your own test credentials.
+Then update `.env.local` with local placeholders or your own test credentials. Keep the mock flags enabled unless your issue specifically requires a live sandbox provider. The template is safe to commit; `.env.local` is not.
+
+### Environment categories
+
+- **Required for local app state:** `NEXT_PUBLIC_APP_URL`, `MONGODB_URI`, and `JWT_SECRET`.
+- **Required for live Privy auth testing:** `NEXT_PUBLIC_PRIVY_APP_ID`, `PRIVY_APP_SECRET`, and `PRIVY_JWKS_URL`; `PRIVY_APP_ID` is an optional server-side override.
+- **Optional local/server features:** `AUTH_SESSION_SECRET`, `KYC_DOCUMENT_ENCRYPTION_KEY`, `PAYSTACK_DVA_PREFERRED_BANK`, `PAYSTACK_PUBLIC_KEY`, and `BLOB_READ_WRITE_TOKEN`.
+- **Mock-only by default:** `PAYSTACK_SECRET_KEY`, `RESEND_API_KEY`, `STELLAR_ISSUER_PUBLIC_KEY`, `STELLAR_DISTRIBUTION_PUBLIC_KEY`, and `STELLAR_CONTRACT_ID` can remain placeholders while mock mode is enabled.
+- **Planned Stellar testnet defaults:** `STELLAR_NETWORK`, `STELLAR_HORIZON_URL`, `STELLAR_RPC_URL`, and `STELLAR_ASSET_CODE` document the intended testnet configuration and do not require maintainer credentials.
 
 ## Mock mode
 
