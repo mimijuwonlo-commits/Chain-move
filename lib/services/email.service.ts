@@ -12,6 +12,12 @@ export interface SendEmailResult {
   mocked: boolean
 }
 
+export interface EmailEnvironment {
+  ENABLE_MOCK_EMAILS?: string
+  RESEND_API_KEY?: string
+  NODE_ENV?: string
+}
+
 export class EmailConfigurationError extends Error {
   constructor() {
     super("Email service is not configured")
@@ -29,7 +35,7 @@ export class EmailDeliveryError extends Error {
 let resendClient: Resend | null = null
 let resendApiKey: string | null = null
 
-export function isMockEmailEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
+export function isMockEmailEnabled(env: EmailEnvironment = process.env): boolean {
   return env.ENABLE_MOCK_EMAILS?.trim().toLowerCase() === "true"
 }
 
@@ -43,7 +49,7 @@ function getResendClient(apiKey: string): Resend {
 
 export async function sendEmail(
   input: SendEmailInput,
-  env: NodeJS.ProcessEnv = process.env,
+  env: EmailEnvironment = process.env,
 ): Promise<SendEmailResult> {
   if (isMockEmailEnabled(env)) {
     console.info("MOCK_EMAIL_SEND", {
